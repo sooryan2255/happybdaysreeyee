@@ -107,6 +107,11 @@
             background-color: rgba(255, 255, 255, 0.9); /* Add a slight background to steps */
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+
+            /* --- NEW ADDITIONS FOR SCROLLING --- */
+            max-height: 90vh; /* Set a maximum height relative to the viewport height */
+            overflow-y: auto; /* Add vertical scrollbar if content overflows */
+            /* --- END NEW ADDITIONS --- */
         }
 
         .active {
@@ -523,6 +528,11 @@
     </style>
 </head>
 <body>
+    <audio id="background-music" loop>
+        <source src="https://docs.google.com/uc?export=download&id=1JEkxOJuHhogu4ksbISTJrIo9t7A56OGg" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
     <div class="heart-container">
         <div class="heart"></div>
         <div class="heart"></div>
@@ -635,6 +645,8 @@
             const giftBox1 = document.getElementById('giftBox1');
             const giftBox2 = document.getElementById('giftBox2');
 
+            const backgroundMusic = document.getElementById('background-music'); // Get the audio element
+
 
             // Mascot References
             const mascot = document.getElementById('mascot');
@@ -697,6 +709,14 @@
             // Event listener for the "Start Game" button
             startGameButton.addEventListener('click', () => {
                 nextStep('step1'); // Move to the first game step
+                // Play music when the user clicks the start button
+                if (backgroundMusic) {
+                    backgroundMusic.play().catch(error => {
+                        console.warn("Autoplay was prevented:", error);
+                        // Optionally, show a message to the user that they can click to play music
+                        // Or add a visible play/pause button
+                    });
+                }
             });
 
 
@@ -996,6 +1016,12 @@ Enjoy every moment and keep smiling! 💛`;
                 // Reset mascot message and clear any pending hints
                 updateMascotMessage(currentStep);
                 clearTimeout(hintTimeout);
+
+                // Pause music if it's already playing, or ensure it's not playing before user interaction
+                if (backgroundMusic) {
+                    backgroundMusic.pause();
+                    backgroundMusic.currentTime = 0; // Reset to start
+                }
             }
 
             initializeGame();
